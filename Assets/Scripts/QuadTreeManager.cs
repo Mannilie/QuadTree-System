@@ -7,6 +7,7 @@ public class QuadTreeManager : MonoBehaviour
     public float cellSize = 200f;
     public int maxDepth = 4;
     public float queryRadius = 10f;
+    public float subdivideThreshold = 2f;
 
     private QuadTree quadTree;
 
@@ -20,7 +21,7 @@ public class QuadTreeManager : MonoBehaviour
     {
         Vector2 playerPosition =
             new Vector2(playerTransform.position.x, playerTransform.position.z); // Using Z instead of Y
-        quadTree.UpdatePlayerLocation(playerPosition);
+        quadTree.UpdatePlayerLocation(playerPosition, subdivideThreshold);
     }
 
     void OnDrawGizmos()

@@ -371,8 +371,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerTransform: {fileID: 323825304}
   cellSize: 100
-  maxDepth: 3
-  queryRadius: 5
+  maxDepth: 6
+  queryRadius: 0
+  subdivideThreshold: 1
 --- !u!4 &1636913088
 Transform:
   m_ObjectHideFlags: 0

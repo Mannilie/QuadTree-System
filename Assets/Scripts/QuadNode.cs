@@ -16,21 +16,26 @@ public class QuadNode
         this.maxDepth = maxDepth;
     }
 
-    public void InsertPlayer(Vector2 position)
+    public void InsertPlayer(Vector2 position, float subdivideThreshold)
     {
-        if (!bounds.Contains(position))
-            return;
-
         if (depth < maxDepth)
         {
-            if (children == null)
+            float distToPlayer = Vector3.Distance(bounds.center, position);
+            if (distToPlayer / bounds.size.magnitude < subdivideThreshold)
             {
                 Subdivide();
             }
-
-            foreach (var child in children)
+     
+            if (children != null)
             {
-                child.InsertPlayer(position);
+                foreach (var child in children)
+                {
+                    child.InsertPlayer(position, subdivideThreshold);
+                }
+            }
+            else
+            {
+                playerPosition = position;
             }
         }
         else
@@ -46,12 +51,9 @@ public class QuadNode
         float halfHeight = bounds.height / 2f;
 
         children[0] = new QuadNode(new Rect(bounds.x, bounds.y, halfWidth, halfHeight), depth + 1, maxDepth);
-        children[1] = new QuadNode(new Rect(bounds.x + halfWidth, bounds.y, halfWidth, halfHeight), depth + 1,
-            maxDepth);
-        children[2] = new QuadNode(new Rect(bounds.x, bounds.y + halfHeight, halfWidth, halfHeight), depth + 1,
-            maxDepth);
-        children[3] = new QuadNode(new Rect(bounds.x + halfWidth, bounds.y + halfHeight, halfWidth, halfHeight),
-            depth + 1, maxDepth);
+        children[1] = new QuadNode(new Rect(bounds.x + halfWidth, bounds.y, halfWidth, halfHeight), depth + 1, maxDepth);
+        children[2] = new QuadNode(new Rect(bounds.x, bounds.y + halfHeight, halfWidth, halfHeight), depth + 1, maxDepth);
+        children[3] = new QuadNode(new Rect(bounds.x + halfWidth, bounds.y + halfHeight, halfWidth, halfHeight), depth + 1, maxDepth);
     }
 
     public void RemovePlayer()
@@ -85,7 +87,7 @@ public class QuadNode
         return true;
     }
 
-    
+
     public QuadNode FindOrExpand(Vector2 position, QuadTree tree)
     {
         return bounds.Contains(position) ? this : null;

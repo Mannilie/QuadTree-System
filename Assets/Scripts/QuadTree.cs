@@ -20,7 +20,7 @@ public class QuadTree
         root = new QuadNode(new Rect(-cellSize / 2, -cellSize / 2, cellSize, cellSize), 0, maxDepth);
     }
 
-    public void UpdatePlayerLocation(Vector2 newPlayerPosition)
+    public void UpdatePlayerLocation(Vector2 newPlayerPosition, float subdivideThreshold)
     {
         root.RemovePlayer(); // Remove player from current position
 
@@ -48,7 +48,7 @@ public class QuadTree
             root = newRoot; // Update root reference
         }
 
-        root.InsertPlayer(newPlayerPosition); // Insert player into new position
+        root.InsertPlayer(newPlayerPosition, subdivideThreshold); // Insert player into new position
         OnPlayerLocationUpdated?.Invoke(newPlayerPosition);
     }
 
