@@ -24,26 +24,22 @@ public class QuadTree
     {
         root.RemovePlayer(); // Remove player from current position
 
-        // Recenter the root if the new position is outside its bounds
-        while (!root.bounds.Contains(newPlayerPosition))
+        // Find the difference between the new position and the root's center
+        float diffX = newPlayerPosition.x - root.bounds.center.x;
+        float diffY = newPlayerPosition.y - root.bounds.center.y;
+
+        // Calculate the offset based on the cell size
+        float offsetX = Mathf.Round(diffX / CellSize) * CellSize;
+        float offsetY = Mathf.Round(diffY / CellSize) * CellSize;
+
+        // Calculate the new X and Y for the root
+        float newX = root.bounds.xMin + offsetX;
+        float newY = root.bounds.yMin + offsetY;
+
+        // Only update the root if the new position is outside its current bounds
+        if (!root.bounds.Contains(newPlayerPosition))
         {
-            float newWidth = root.bounds.width;
-            float newHeight = root.bounds.height;
-
-            // Calculate the new X and Y based on the direction the player has moved relative to the current root bounds
-            float newX = root.bounds.xMin;
-            if (newPlayerPosition.x < root.bounds.xMin)
-                newX -= newWidth;
-            else if (newPlayerPosition.x > root.bounds.xMax)
-                newX += newWidth;
-
-            float newY = root.bounds.yMin;
-            if (newPlayerPosition.y < root.bounds.yMin)
-                newY -= newHeight;
-            else if (newPlayerPosition.y > root.bounds.yMax)
-                newY += newHeight;
-
-            QuadNode newRoot = new QuadNode(new Rect(newX, newY, newWidth, newHeight), 0, MaxDepth);
+            QuadNode newRoot = new QuadNode(new Rect(newX, newY, root.bounds.width, root.bounds.height), 0, MaxDepth);
             newRoot.Subdivide();
 
             int index = (newPlayerPosition.x < root.bounds.center.x ? 0 : 1) + (newPlayerPosition.y < root.bounds.center.y ? 0 : 2);
@@ -55,6 +51,7 @@ public class QuadTree
         root.InsertPlayer(newPlayerPosition); // Insert player into new position
         OnPlayerLocationUpdated?.Invoke(newPlayerPosition);
     }
+
 
 
 
